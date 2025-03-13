@@ -27,7 +27,10 @@ export const generateEmail = async (prompt: string): Promise<string> => {
     output: schema,
   });
   console.log(response.object);
-  return `${response.object.subject} ${response.object.body} ${response.object.cta}`;
+
+  const message = `${response.object.subject} ${response.object.body} ${response.object.cta}`;
+  return message
+  
 };
 
 const schema = z.object({
