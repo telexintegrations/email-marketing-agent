@@ -1,5 +1,6 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, HttpException, HttpStatus, Query } from '@nestjs/common';
 import { EmailMarketerService } from './email-marketer.service';
+import { json } from 'stream/consumers';
 
 @Controller('email-marketer')
 export class EmailMarketerController {
@@ -11,9 +12,16 @@ export class EmailMarketerController {
       if (!prompt) {
         throw new Error('Prompt is required');
       }
-      return this.emailMarketerService.generateEmailWithMastra(prompt);
+      const message =
+        await this.emailMarketerService.generateEmailWithMastra(prompt);
+      return {
+        event_name: 'email_generated',
+        message,
+        status: 'success',
+        username: 'mastraAiemailgen',
+      };
     } catch (error) {
-      return error.message;
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
