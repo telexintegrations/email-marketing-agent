@@ -20,12 +20,20 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@ai-sdk/groq": "^1.1.13",
+    "@ai-sdk/openai": "^1.2.4",
+    "@mastra/client-js": "^0.1.7",
+    "@mastra/core": "^0.6.0",
     "@nestjs/common": "^10.0.0",
+    "@nestjs/config": "^4.0.1",
     "@nestjs/core": "^10.0.0",
     "@nestjs/platform-express": "^10.0.0",
-    "mastra": "^0.3.0",
+    "agent": "link:@mastra/core/agent",
+    "class-validator": "^0.14.1",
+    "mastra": "^0.3.1",
     "reflect-metadata": "^0.2.0",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "zod": "^3.24.2"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",
