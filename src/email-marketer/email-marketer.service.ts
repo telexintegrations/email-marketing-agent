@@ -21,7 +21,7 @@ export class EmailMarketerService {
     if (!prompt || typeof prompt !== 'string') {
       throw new Error('Invalid prompt: must be a non-empty string');
     }
-
+    prompt = prompt.replace(/<\/?[^>]+(>|$)/g, '');
     console.log('Extracted prompt:', prompt);
 
     // Ensure @mailer is at the beginning
