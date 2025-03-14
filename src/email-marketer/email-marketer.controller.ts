@@ -1,6 +1,11 @@
-import { Controller, Get, HttpException, HttpStatus, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  HttpException,
+  HttpStatus,
+  Query,
+} from '@nestjs/common';
 import { EmailMarketerService } from './email-marketer.service';
-import { json } from 'stream/consumers';
 
 @Controller('email-marketer')
 export class EmailMarketerController {
@@ -30,29 +35,34 @@ export class EmailMarketerController {
     return {
       data: {
         date: {
-          created_at: '2025-03-13',
+          created_at: '2025-03-12',
           updated_at: '2025-03-13',
         },
         descriptions: {
-          app_name: 'Email Marketer',
+          app_name: 'Email Marketing Agent',
           app_description:
-            'Email Marketer is a service that helps users create engaging marketing emails',
-          app_logo: '',
-          app_url: '',
-          background_color: '#f0f0f0',
+            'An AI-powered email marketing agent designed to generate engaging and personalized marketing emails',
+          app_logo: 'https://cdn-icons-png.flaticon.com/512/7286/7286142.png',
+          app_url: 'https://mastraaiemailagent.onrender.com/',
+          background_color: '#fff',
         },
         is_active: true,
         integration_type: 'modifier',
-        integration_category: 'Monitoring & Logging',
-        key_features: [
-          'Create engaging marketing emails',
-          'Help users create marketing emails',
-          'Format emails with subject, body, and CTA',
+        integration_category: 'Marketing Automation',
+        key_features: ['Email Generation', 'Prompt Response', 'AI-Powered'],
+        author: 'Tempah, Diligwe, Jay',
+        settings: [
+          {
+            label: 'Duration',
+            type: 'number',
+            required: true,
+            default: '10',
+          },
         ],
-        author: 'Oceans9',
-        settings: [],
-        target_url: '',
-        tick_url: '',
+        target_url:
+          'https://mastraaiemailagent.onrender.com/email-marketer/generate',
+        tick_url:
+          'https://mastraaiemailagent.onrender.com/email-marketer/integration-config',
       },
     };
   }
