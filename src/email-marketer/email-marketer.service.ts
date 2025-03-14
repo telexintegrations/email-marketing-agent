@@ -3,9 +3,12 @@ import { generateEmail } from 'src/utils/mastra/mastra-ai';
 
 @Injectable()
 export class EmailMarketerService {
-  async generateEmailWithMastra(prompt: string) {
+  async generateEmailWithMastra(prompt: any): Promise<string> {
     const triggerWord = '@mailer ';
-    //check if the triggerword is present as the first word of the sentece
+    if (!prompt || typeof prompt !== 'string') {
+      console.log('prompt:', prompt);
+      throw new Error('Prompt is required');
+    }
     if (!prompt.startsWith(triggerWord)) return prompt;
     if (!prompt.includes(triggerWord)) return prompt;
 
