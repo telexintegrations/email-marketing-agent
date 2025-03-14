@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Get,
   HttpException,
@@ -12,7 +13,7 @@ export class EmailMarketerController {
   constructor(private readonly emailMarketerService: EmailMarketerService) {}
 
   @Post('generate')
-  async generateEmail(prompt: string) {
+  async generateEmail(@Body('prompt') prompt: string) {
     try {
       if (!prompt) {
         throw new Error('Prompt is required');
