@@ -17,7 +17,6 @@ export class EmailMarketerService {
       }
     }
 
-    // Ensure prompt is a valid string
     if (!prompt || typeof prompt !== 'string') {
       throw new Error('Invalid prompt: must be a non-empty string');
     }
