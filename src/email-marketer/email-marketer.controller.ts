@@ -13,7 +13,7 @@ export class EmailMarketerController {
   constructor(private readonly emailMarketerService: EmailMarketerService) {}
 
   @Post('generate')
-  async generateEmail(@Body('prompt') prompt: string) {
+  async generateEmail(@Body() prompt: string) {
     console.log('prompt:', prompt);
     try {
       if (!prompt) {
@@ -28,6 +28,7 @@ export class EmailMarketerController {
         username: 'mastraAiemailgen',
       };
     } catch (error) {
+      console.log('error:', error);
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
