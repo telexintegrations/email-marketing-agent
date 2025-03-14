@@ -5,24 +5,29 @@ import { generateEmail } from 'src/utils/mastra/mastra-ai';
 export class EmailMarketerService {
   async generateEmailWithMastra(prompt: any): Promise<string> {
     const triggerWord = '@mailer ';
-    while (
-      typeof prompt === 'object' &&
-      prompt !== null &&
-      'prompt' in prompt
-    ) {
-      prompt = prompt.prompt;
+
+    // Recursively extract the actual string from nested objects
+    while (typeof prompt === 'object' && prompt !== null) {
+      if ('prompt' in prompt) {
+        prompt = prompt.prompt;
+      } else if ('message' in prompt) {
+        prompt = prompt.message.toString();
+      } else {
+        break;
+      }
     }
 
+    // Ensure prompt is a valid string
     if (!prompt || typeof prompt !== 'string') {
       throw new Error('Invalid prompt: must be a non-empty string');
     }
+
+    console.log('Extracted prompt:', prompt);
+
+    // Ensure @mailer is at the beginning
     if (!prompt.startsWith(triggerWord)) return prompt;
-    if (!prompt.includes(triggerWord)) return prompt;
 
     try {
-      if (!prompt) {
-        throw new Error('Prompt is required');
-      }
       return generateEmail(prompt);
     } catch (error) {
       return error.message;
