@@ -8,11 +8,7 @@ dotenv.config();
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   
-  app.enableCors({
-    origin:['https://mastraaiemailagent.onrender.com', 'http://localhost:5173'],
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    allowedHeaders: 'Content-Type, Authorization',
-  });
+  app.enableCors();
   
   await app.listen(process.env.PORT);
 }
