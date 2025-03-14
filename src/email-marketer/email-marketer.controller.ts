@@ -1,11 +1,17 @@
-import { Controller, Get, HttpException, HttpStatus } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  HttpException,
+  HttpStatus,
+  Post,
+} from '@nestjs/common';
 import { EmailMarketerService } from './email-marketer.service';
 
 @Controller('email-marketer')
 export class EmailMarketerController {
   constructor(private readonly emailMarketerService: EmailMarketerService) {}
 
-  @Get('generate')
+  @Post('generate')
   async generateEmail(prompt: string) {
     try {
       if (!prompt) {
