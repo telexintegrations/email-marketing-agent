@@ -14,6 +14,7 @@ export class EmailMarketerController {
 
   @Post('generate')
   async generateEmail(@Body('prompt') prompt: string) {
+    console.log('prompt:', prompt);
     try {
       if (!prompt) {
         throw new Error('Prompt is required');
@@ -22,7 +23,7 @@ export class EmailMarketerController {
         await this.emailMarketerService.generateEmailWithMastra(prompt);
       return {
         event_name: 'email_generated',
-        message,
+        message: `${message}`,
         status: 'success',
         username: 'mastraAiemailgen',
       };
