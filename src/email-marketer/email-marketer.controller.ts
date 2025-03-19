@@ -7,13 +7,14 @@ import {
   Post,
 } from '@nestjs/common';
 import { EmailMarketerService } from './email-marketer.service';
+import { EmailGenerationResponse } from 'src/utils/inferredTypes';
 
 @Controller('email-marketer')
 export class EmailMarketerController {
   constructor(private readonly emailMarketerService: EmailMarketerService) {}
 
   @Post('generate')
-  async generateEmail(@Body() prompt: string) {
+  async sendEmail(@Body() prompt: string): Promise<EmailGenerationResponse> {
     console.log('prompt:', prompt);
     try {
       if (!prompt) {
@@ -21,6 +22,9 @@ export class EmailMarketerController {
       }
       const message =
         await this.emailMarketerService.generateEmailWithMastra(prompt);
+      await this.emailMarketerService
+        .sendGeneratedEmailToTelex(message)
+        .then(console.log);
       return {
         event_name: 'email_generated',
         message: `${message}`,
