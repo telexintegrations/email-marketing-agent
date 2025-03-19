@@ -8,18 +8,36 @@ import {
 } from '@nestjs/common';
 import { EmailMarketerService } from './email-marketer.service';
 
+export interface EmailGenerationResponse {
+  event_name: 'email_generated';
+  message: string;
+  status: 'success';
+  username: 'mastraAiemailgen';
+}
+
+// Removed duplicate and incorrect type declaration
+export type EmailGeneration = {
+  event_name: 'email_generated';
+  message: string;
+  status: 'success';
+  username: 'mastraAiemailgen';
+};
 @Controller('email-marketer')
 export class EmailMarketerController {
   constructor(private readonly emailMarketerService: EmailMarketerService) {}
 
   @Post('generate')
-  async generateEmail(@Body('prompt') prompt: string) {
+  async sendEmail(@Body() prompt: string) {
+    console.log('prompt:', prompt);
     try {
       if (!prompt) {
         throw new Error('Prompt is required');
       }
       const message =
         await this.emailMarketerService.generateEmailWithMastra(prompt);
+      await this.emailMarketerService
+        .sendGeneratedEmailToTelex(message)
+        .then(console.log);
       return {
         event_name: 'email_generated',
         message,
