@@ -5,7 +5,7 @@ import { Agent } from '@mastra/core/agent';
 import { z } from 'zod';
 
 const groq = createGroq({
-  apiKey: process.env.GROQ_AI_API_KEY || "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",
+  apiKey: process.env.GROQ_AI_API_KEY,
 })
 
 const emailAgent = new Agent({
