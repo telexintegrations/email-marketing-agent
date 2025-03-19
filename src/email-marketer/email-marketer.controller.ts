@@ -7,27 +7,14 @@ import {
   Post,
 } from '@nestjs/common';
 import { EmailMarketerService } from './email-marketer.service';
+import { EmailGenerationResponse } from 'src/utils/inferredTypes';
 
-export interface EmailGenerationResponse {
-  event_name: 'email_generated';
-  message: string;
-  status: 'success';
-  username: 'mastraAiemailgen';
-}
-
-// Removed duplicate and incorrect type declaration
-export type EmailGeneration = {
-  event_name: 'email_generated';
-  message: string;
-  status: 'success';
-  username: 'mastraAiemailgen';
-};
 @Controller('email-marketer')
 export class EmailMarketerController {
   constructor(private readonly emailMarketerService: EmailMarketerService) {}
 
   @Post('generate')
-  async sendEmail(@Body() prompt: string) {
+  async sendEmail(@Body() prompt: string): Promise<EmailGenerationResponse> {
     console.log('prompt:', prompt);
     try {
       if (!prompt) {

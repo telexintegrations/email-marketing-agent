@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
+import { EmailGeneration } from 'src/utils/inferredTypes';
 import { generateEmail } from 'src/utils/mastra/mastra-ai';
-import { EmailGeneration } from './email-marketer.controller';
 
 @Injectable()
 export class EmailMarketerService {
