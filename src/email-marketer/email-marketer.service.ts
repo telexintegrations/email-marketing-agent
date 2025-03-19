@@ -28,7 +28,6 @@ export class EmailMarketerService {
 
     // Ensure @mailer is at the beginning
     if (!prompt.startsWith(triggerWord)) return prompt;
-    if (!prompt.includes(triggerWord)) return prompt;
 
     try {
       return await generateEmail(prompt);

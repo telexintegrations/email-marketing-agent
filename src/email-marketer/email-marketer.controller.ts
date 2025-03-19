@@ -27,11 +27,12 @@ export class EmailMarketerController {
         .then(console.log);
       return {
         event_name: 'email_generated',
-        message,
+        message: `${message}`,
         status: 'success',
         username: 'mastraAiemailgen',
       };
     } catch (error) {
+      console.log('error:', error);
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
