@@ -11,14 +11,15 @@ export class EmailMarketerService {
     while (typeof prompt === 'object' && prompt !== null) {
       if ('message' in prompt) {
         prompt = prompt.message.toString();
-        prompt = prompt.replace(/<\/?[^>]+(>|$)/g, '');
+        
       } else if ('prompt' in prompt) {
         prompt = prompt.prompt.toString();
-        prompt = prompt.replace(/<\/?[^>]+(>|$)/g, '');
       } else {
         break;
       }
     }
+
+    prompt = prompt.replace(/<\/?[^>]+(>|$)/g, '');
 
     if (!prompt || typeof prompt !== 'string') {
       throw new Error('Invalid prompt: must be a non-empty string');
