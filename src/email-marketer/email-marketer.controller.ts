@@ -7,6 +7,7 @@ import {
   Post,
 } from '@nestjs/common';
 import { EmailMarketerService } from './email-marketer.service';
+import logger from 'src/config/logger';
 
 @Controller('email-marketer')
 export class EmailMarketerController {
@@ -14,7 +15,7 @@ export class EmailMarketerController {
 
   @Post('generate')
   async sendEmail(@Body() body: any) {
-    console.log('Received request body:', body);
+    logger.info('Received request body:', { body });
 
     try {
       if (!body.prompt && !body.message) {
@@ -33,7 +34,9 @@ export class EmailMarketerController {
         body.message,
       );
 
-      console.log('Calling sendGeneratedEmailToTelex with message:', message);
+      logger.info('Calling sendGeneratedEmailToTelex with message:', {
+        message,
+      });
       await this.emailMarketerService.sendGeneratedEmailToTelex(
         message,
         webhookUrl,
@@ -41,7 +44,7 @@ export class EmailMarketerController {
 
       return { message: 'Email successfully sent to Telex' };
     } catch (error) {
-      console.log('Error in sendEmail controller:', error);
+      logger.error('Error in sendEmail controller:', { error });
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }

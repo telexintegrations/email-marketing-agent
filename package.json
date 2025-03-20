@@ -20,7 +20,6 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "cors": "^2.8.5",
     "@ai-sdk/groq": "^1.1.13",
     "@ai-sdk/openai": "^1.2.4",
     "@mastra/client-js": "^0.1.7",
@@ -29,12 +28,15 @@
     "@nestjs/config": "^4.0.1",
     "@nestjs/core": "^10.0.0",
     "@nestjs/platform-express": "^10.0.0",
-    "agent": "link:@mastra/core/agent",
+    "@types/winston": "^2.4.4",
+    "agent": "@mastra/core/agent",
     "class-validator": "^0.14.1",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "mastra": "^0.3.1",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
+    "winston": "^3.17.0",
     "zod": "^3.24.2"
   },
   "devDependencies": {
