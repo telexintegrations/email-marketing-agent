@@ -9,10 +9,11 @@ export class EmailMarketerService {
 
     // Recursively extract the actual string from nested objects
     while (typeof prompt === 'object' && prompt !== null) {
-      if ('prompt' in prompt) {
-        prompt = prompt.prompt;
-      } else if ('message' in prompt) {
+      if ('message' in prompt) {
         prompt = prompt.message.toString();
+        prompt = prompt.replace(/<\/?[^>]+(>|$)/g, '');
+      } else if ('prompt' in prompt) {
+        prompt = prompt.prompt.toString();
         prompt = prompt.replace(/<\/?[^>]+(>|$)/g, '');
       } else {
         break;
