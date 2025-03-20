@@ -21,11 +21,13 @@ export class EmailMarketerController {
         throw new Error('Prompt is required');
       }
 
-      if (!body.settings || !body.settings.webhook_url) {
+      const webhookUrl = body.settings.find(
+        (s: any) => s.label === 'webhook_url',
+      ).default;
+
+      if (!body.settings || !webhookUrl) {
         throw new Error('Webhook URL is required');
       }
-
-      const webhookUrl = body.settings.webhook_url;
 
       const message = await this.emailMarketerService.generateEmailWithMastra(
         body.message,
