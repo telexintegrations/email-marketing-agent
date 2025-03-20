@@ -3,6 +3,8 @@ import { generateEmail } from 'src/utils/mastra/mastra-ai';
 
 @Injectable()
 export class EmailMarketerService {
+  url =
+    'https://ping.telex.im/v1/webhooks/0195932a-d682-7898-ba9e-8762177eba3a';
   async generateEmailWithMastra(prompt: any): Promise<string> {
     const triggerWord = '@mailer ';
 
