@@ -4,8 +4,6 @@ import { generateEmail } from 'src/utils/mastra/mastra-ai';
 
 @Injectable()
 export class EmailMarketerService {
-  url =
-    'https://ping.telex.im/v1/webhooks/0195932a-d682-7898-ba9e-8762177eba3a';
   async generateEmailWithMastra(prompt: any): Promise<string> {
     const triggerWord = '@mailer ';
 
@@ -36,16 +34,19 @@ export class EmailMarketerService {
     }
   }
 
-  async sendGeneratedEmailToTelex(email: string) {
+  async sendGeneratedEmailToTelex(email: string, webhook_url: string) {
+    const url = `https://ping.telex.im/v1/webhooks/${webhook_url}`;
     console.log('Sending email to Telex:', email);
+
     const data = {
       event_name: 'email_generated',
       message: email,
       status: 'success',
       username: 'mastraAiemailgen',
     } as EmailGeneration;
+
     try {
-      const response = await fetch(this.url, {
+      const response = const response = await fetch(url, {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -53,10 +54,19 @@ export class EmailMarketerService {
         },
         body: JSON.stringify(data),
       });
-      console.log('Email sent to Telex', response);
+
+      if (response.status === 202) {
+        console.log('Telex accepted the request, processing in progress...');
+      } else if (!response.ok) {
+        console.log(
+          `Telex responded with an error: ${response.status} ${response.statusText}`,
+        );
+      } else {
+        console.log('Email successfully sent to Telex.');
+      }
       return response;
     } catch (error) {
-      console.log('Error sending email to Telex:', error);
+      console.error('Error sending email to Telex:', error);
     }
   }
 }
