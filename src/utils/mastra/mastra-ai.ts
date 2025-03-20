@@ -1,8 +1,12 @@
 /* eslint-disable prettier/prettier */
 import { Mastra } from '@mastra/core';
-import { groq } from '@ai-sdk/groq';
+import { createGroq } from '@ai-sdk/groq';
 import { Agent } from '@mastra/core/agent';
 import { z } from 'zod';
+
+const groq = createGroq({
+  apiKey: process.env.GROQ_AI_API_KEY,
+})
 
 const emailAgent = new Agent({
   name: 'email-agent',

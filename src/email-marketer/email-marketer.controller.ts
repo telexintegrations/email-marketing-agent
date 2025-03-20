@@ -7,32 +7,39 @@ import {
   Post,
 } from '@nestjs/common';
 import { EmailMarketerService } from './email-marketer.service';
-import { EmailGenerationResponse } from 'src/utils/inferredTypes';
 
 @Controller('email-marketer')
 export class EmailMarketerController {
   constructor(private readonly emailMarketerService: EmailMarketerService) {}
 
   @Post('generate')
-  async sendEmail(@Body() prompt: string): Promise<EmailGenerationResponse> {
-    console.log('prompt:', prompt);
+  async sendEmail(@Body() body: any) {
+    console.log('Received request body:', body);
+
     try {
-      if (!prompt) {
+      if (!body.prompt) {
         throw new Error('Prompt is required');
       }
-      const message =
-        await this.emailMarketerService.generateEmailWithMastra(prompt);
-      await this.emailMarketerService
-        .sendGeneratedEmailToTelex(message)
-        .then(console.log);
-      return {
-        event_name: 'email_generated',
-        message: `${message}`,
-        status: 'success',
-        username: 'mastraAiemailgen',
-      };
+
+      if (!body.settings || !body.settings.webhook_url) {
+        throw new Error('Webhook URL is required');
+      }
+
+      const webhookUrl = body.settings.webhook_url;
+
+      const message = await this.emailMarketerService.generateEmailWithMastra(
+        body.prompt,
+      );
+
+      console.log('Calling sendGeneratedEmailToTelex with message:', message);
+      await this.emailMarketerService.sendGeneratedEmailToTelex(
+        message,
+        webhookUrl,
+      );
+
+      return { message: 'Email successfully sent to Telex' };
     } catch (error) {
-      console.log('error:', error);
+      console.log('Error in sendEmail controller:', error);
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
@@ -64,6 +71,12 @@ export class EmailMarketerController {
             type: 'number',
             required: true,
             default: '10',
+          },
+          {
+            label: 'webhook_url',
+            type: 'text',
+            required: true,
+            default: 'Write your webhook url here',
           },
         ],
         target_url:
