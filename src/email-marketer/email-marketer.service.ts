@@ -32,4 +32,26 @@ export class EmailMarketerService {
       return error.message;
     }
   }
+
+  async sendGeneratedEmailToTelex(email: string) {
+    console.log('Sending email to Telex:', email);
+    const data = {
+      event_name: 'email_generated',
+      message: email,
+      status: 'success',
+      username: 'mastraAiemailgen',
+    } as EmailGeneration;
+    try {
+      await fetch(this.url, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+    } catch (error) {
+      console.log('Error sending email to Telex:', error);
+    }
+  }
 }
