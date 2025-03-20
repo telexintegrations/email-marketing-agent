@@ -46,7 +46,7 @@ export class EmailMarketerService {
     } as EmailGeneration;
 
     try {
-      const response = const response = await fetch(url, {
+      const response = await fetch(url, {
         method: 'POST',
         headers: {
           Accept: 'application/json',
