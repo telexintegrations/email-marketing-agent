@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { EmailGeneration } from 'src/utils/inferredTypes';
 import { generateEmail } from 'src/utils/mastra/mastra-ai';
 
 @Injectable()
@@ -14,6 +15,7 @@ export class EmailMarketerService {
         prompt = prompt.prompt;
       } else if ('message' in prompt) {
         prompt = prompt.message.toString();
+        prompt = prompt.replace(/<\/?[^>]+(>|$)/g, '');
       } else {
         break;
       }
@@ -22,14 +24,13 @@ export class EmailMarketerService {
     if (!prompt || typeof prompt !== 'string') {
       throw new Error('Invalid prompt: must be a non-empty string');
     }
-    prompt = prompt.replace(/<\/?[^>]+(>|$)/g, '');
     console.log('Extracted prompt:', prompt);
 
     // Ensure @mailer is at the beginning
     if (!prompt.startsWith(triggerWord)) return prompt;
 
     try {
-      return generateEmail(prompt);
+      return await generateEmail(prompt);
     } catch (error) {
       return error.message;
     }
