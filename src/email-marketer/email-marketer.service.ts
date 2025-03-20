@@ -46,7 +46,6 @@ export class EmailMarketerService {
     } as EmailGeneration;
 
     try {
-
       const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -66,8 +65,6 @@ export class EmailMarketerService {
         console.log('Email successfully sent to Telex.');
       }
       return response;
-
-
     } catch (error) {
       console.error('Error sending email to Telex:', error);
     }

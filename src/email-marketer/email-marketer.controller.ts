@@ -17,7 +17,7 @@ export class EmailMarketerController {
     console.log('Received request body:', body);
 
     try {
-      if (!body.prompt || !body.message) {
+      if (!body.prompt && !body.message) {
         throw new Error('Prompt is required');
       }
 
