@@ -7,6 +7,7 @@ import {
   Post,
 } from '@nestjs/common';
 import { EmailMarketerService } from './email-marketer.service';
+import { ENV_CONFIG } from "../utils/envConfig";
 
 @Controller('email-marketer')
 export class EmailMarketerController {
@@ -57,7 +58,7 @@ export class EmailMarketerController {
           app_description:
             'An AI-powered email marketing agent designed to generate engaging and personalized marketing emails',
           app_logo: 'https://cdn-icons-png.flaticon.com/512/7286/7286142.png',
-          app_url: 'https://mastraaiemailagent.onrender.com/',
+          app_url: ENV_CONFIG.SERVER_URL,
           background_color: '#fff',
         },
         is_active: true,
@@ -80,9 +81,9 @@ export class EmailMarketerController {
           },
         ],
         target_url:
-          'https://mastraaiemailagent.onrender.com/email-marketer/generate',
+          `${ENV_CONFIG.SERVER_URL}/email-marketer/generate`,
         tick_url:
-          'https://mastraaiemailagent.onrender.com/email-marketer/generate/integration-config',
+          `${ENV_CONFIG.SERVER_URL}/email-marketer/generate/integration-config`,
       },
     };
   }
