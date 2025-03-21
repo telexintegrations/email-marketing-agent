@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { EmailMarketerService } from './email-marketer.service';
 import { ENV_CONFIG } from "../utils/envConfig";
+import logger from 'src/config/logger';
 
 @Controller('email-marketer')
 export class EmailMarketerController {
@@ -15,24 +16,28 @@ export class EmailMarketerController {
 
   @Post('generate')
   async sendEmail(@Body() body: any) {
-    console.log('Received request body:', body);
+    logger.info('Received request body:', { body });
 
     try {
       if (!body.prompt && !body.message) {
         throw new Error('Prompt is required');
       }
 
-      if (!body.settings || !body.settings.webhook_url) {
+      const webhookUrl = body.settings.find(
+        (s: any) => s.label === 'webhook_url',
+      ).default;
+
+      if (!body.settings || !webhookUrl) {
         throw new Error('Webhook URL is required');
       }
-
-      const webhookUrl = body.settings.webhook_url;
 
       const message = await this.emailMarketerService.generateEmailWithMastra(
         body.message,
       );
 
-      console.log('Calling sendGeneratedEmailToTelex with message:', message);
+      logger.info('Calling sendGeneratedEmailToTelex with message:', {
+        message,
+      });
       await this.emailMarketerService.sendGeneratedEmailToTelex(
         message,
         webhookUrl,
@@ -40,7 +45,7 @@ export class EmailMarketerController {
 
       return { message: 'Email successfully sent to Telex' };
     } catch (error) {
-      console.log('Error in sendEmail controller:', error);
+      logger.error('Error in sendEmail controller:', { error });
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
