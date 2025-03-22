@@ -16,7 +16,7 @@ export class EmailMarketerController {
 
   @Post('generate')
   async sendEmail(@Body() body: any) {
-    logger.info('Received request body:', { body });
+    logger.info(`Received request body => ${body}`);
 
     logger.info({ prompt: body.prompt, message: body.message });
     try {
@@ -36,9 +36,9 @@ export class EmailMarketerController {
         body.message,
       );
 
-      logger.info('Calling sendGeneratedEmailToTelex with message:', {
-        message,
-      });
+      logger.info(
+        `Calling sendGeneratedEmailToTelex with message => ${message}`,
+      );
 
       await this.emailMarketerService.sendGeneratedEmailToTelex(
         message,
@@ -47,7 +47,7 @@ export class EmailMarketerController {
 
       return { message: 'Email successfully sent to Telex' };
     } catch (error) {
-      logger.error('Error in sendEmail controller:', { error });
+      logger.error(`Error in sendEmail controller => ${error}`);
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
