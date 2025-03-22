@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import logger from 'src/config/logger';
+// import logger from 'src/config/logger';
 import { EmailGeneration } from 'src/utils/inferredTypes';
 import { generateEmail } from 'src/utils/mastra/mastra-ai';
+import { json } from 'stream/consumers';
 
 @Injectable()
 export class EmailMarketerService {
@@ -10,10 +11,13 @@ export class EmailMarketerService {
 
     // Recursively extract the actual string from nested objects
     while (typeof prompt === 'object' && prompt !== null) {
+      console.log(`while loop: ${JSON.stringify(prompt)}`)
       if ('message' in prompt) {
+        console.log(`while loop message: ${JSON.stringify(prompt)}`)
         prompt = prompt.message.toString();
         
       } else if ('prompt' in prompt) {
+        console.log(`while loop prompt: ${JSON.stringify(prompt)}`)
         prompt = prompt.prompt.toString();
       } else {
         break;
@@ -25,10 +29,14 @@ export class EmailMarketerService {
     if (!prompt || typeof prompt !== 'string') {
       throw new Error('Invalid prompt: must be a non-empty string');
     }
-    logger.info('Extracted prompt:', { prompt });
+    // logger.info('Extracted prompt:', { prompt });
+    console.log('Extracted prompt:', JSON.stringify({ prompt }));
 
     // Ensure @mailer is at the beginning
-    if (!prompt.startsWith(triggerWord)) return prompt;
+    if (!prompt.startsWith(triggerWord)) {
+      console.log('invalid prompt')
+      return;
+    }
 
     try {
       return await generateEmail(prompt);
@@ -39,7 +47,8 @@ export class EmailMarketerService {
 
   async sendGeneratedEmailToTelex(email: string, webhook_url: string) {
     const url = `https://ping.telex.im/v1/webhooks/${webhook_url}`;
-    logger.info('Sending email to Telex:', { email });
+    // logger.info('Sending email to Telex:', { email });
+    console.log('Sending email to Telex:', JSON.stringify({ email }));
 
     const data = {
       event_name: 'email_generated',
@@ -61,15 +70,20 @@ export class EmailMarketerService {
       if (response.status === 202) {
         console.log('Telex accepted the request, processing in progress...');
       } else if (!response.ok) {
-        logger.info(
+        // logger.info(
+        //   `Telex responded with an error: ${response.status} ${response.statusText}`,
+        // );
+        console.log(
           `Telex responded with an error: ${response.status} ${response.statusText}`,
-        );
+          );
       } else {
-        logger.info('Email successfully sent to Telex.');
+        // logger.info('Email successfully sent to Telex.');
+        console.log('Email successfully sent to Telex.');
       }
       return response;
     } catch (error) {
-      logger.error('Error sending email to Telex:', error);
+      // logger.error('Error sending email to Telex:', error);
+      console.log('Error sending email to Telex:', error);
     }
   }
 }
