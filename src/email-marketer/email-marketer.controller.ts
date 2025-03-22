@@ -7,8 +7,8 @@ import {
   Post,
 } from '@nestjs/common';
 import { EmailMarketerService } from './email-marketer.service';
-import { ENV_CONFIG } from "../utils/envConfig";
-// import logger from 'src/config/logger';
+import { ENV_CONFIG } from '../utils/envConfig';
+import logger from 'src/config/logger';
 
 @Controller('email-marketer')
 export class EmailMarketerController {
@@ -16,10 +16,9 @@ export class EmailMarketerController {
 
   @Post('generate')
   async sendEmail(@Body() body: any) {
-    // logger.info('Received request body:', { body });
-    console.log('Received request body:', JSON.stringify({ body }));
+    logger.info('Received request body:', { body });
 
-console.log(JSON.stringify({prompt:body.prompt}), JSON.stringify({message:body.message}))
+    logger.info({ prompt: body.prompt, message: body.message });
     try {
       if (!body.prompt && !body.message) {
         throw new Error('Prompt is required');
@@ -37,10 +36,10 @@ console.log(JSON.stringify({prompt:body.prompt}), JSON.stringify({message:body.m
         body.message,
       );
 
-      // logger.info('Calling sendGeneratedEmailToTelex with message:', {
-      //   message,
-      // });
-      console.log('Calling sendGeneratedEmailToTelex with message:', JSON.stringify({ message, }));
+      logger.info('Calling sendGeneratedEmailToTelex with message:', {
+        message,
+      });
+
       await this.emailMarketerService.sendGeneratedEmailToTelex(
         message,
         webhookUrl,
@@ -48,8 +47,7 @@ console.log(JSON.stringify({prompt:body.prompt}), JSON.stringify({message:body.m
 
       return { message: 'Email successfully sent to Telex' };
     } catch (error) {
-      // logger.error('Error in sendEmail controller:', { error });
-      console.log('Error in sendEmail controller:', JSON.stringify({ error }));
+      logger.error('Error in sendEmail controller:', { error });
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
@@ -89,10 +87,8 @@ console.log(JSON.stringify({prompt:body.prompt}), JSON.stringify({message:body.m
             default: 'Write your webhook url here',
           },
         ],
-        target_url:
-          `${ENV_CONFIG.SERVER_URL}/email-marketer/generate`,
-        tick_url:
-          `${ENV_CONFIG.SERVER_URL}/email-marketer/generate/integration-config`,
+        target_url: `${ENV_CONFIG.SERVER_URL}/email-marketer/generate`,
+        tick_url: `${ENV_CONFIG.SERVER_URL}/email-marketer/generate/integration-config`,
       },
     };
   }
