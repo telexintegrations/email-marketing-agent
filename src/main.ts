@@ -9,8 +9,9 @@ async function bootstrap() {
 
   app.enableCors();
 
-  await app.listen(ENV_CONFIG.PORT, () => {
-    logger.info(`Application running on port ${ENV_CONFIG.PORT}`);
+  const port = ENV_CONFIG.PORT || 3000; // Default to 3000 if PORT is not set
+  await app.listen(port, '0.0.0.0', () => {
+    logger.info(`Application running on port ${port}`);
   });
 }
 bootstrap();
