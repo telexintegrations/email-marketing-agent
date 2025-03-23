@@ -87,8 +87,8 @@ export class EmailMarketerController {
             default: 'Write your webhook url here',
           },
         ],
-        target_url: `${ENV_CONFIG.SERVER_URL}/email-marketer/generate`,
-        tick_url: `${ENV_CONFIG.SERVER_URL}/email-marketer/generate/integration-config`,
+        target_url: `https://mastraaiemailagent.onrender.comemail-marketer/generate`,
+        tick_url: `https://mastraaiemailagent.onrender.com/email-marketer/generate/integration-config`,
       },
     };
   }
