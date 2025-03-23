@@ -20,6 +20,3 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Deploy
-        run: |
-          ssh -o StrictHostKeyChecking=no -i ${{ secrets.SSH_KEY }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} 'bash -s' < deploy.sh
