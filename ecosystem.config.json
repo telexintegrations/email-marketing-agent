@@ -9,7 +9,10 @@
         "merge_logs": true,
         "instances": 1,
         "autorestart": true,
-        "watch": false
+        "watch": false,
+        "env": {
+        "PORT": 3000
+      }
       }
     ]
   }
