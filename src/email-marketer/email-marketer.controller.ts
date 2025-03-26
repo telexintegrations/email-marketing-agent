@@ -9,31 +9,25 @@ import {
 import { EmailMarketerService } from './email-marketer.service';
 import { ENV_CONFIG } from '../utils/envConfig';
 import logger from 'src/config/logger';
+import { ReqPayloadDto } from './dto/req-payload.dto';
 
 @Controller('email-marketer')
 export class EmailMarketerController {
   constructor(private readonly emailMarketerService: EmailMarketerService) {}
 
   @Post('generate')
-  async sendEmail(@Body() body: any) {
-    logger.info(`Received request body => ${body}`);
-
-    logger.info({ prompt: body.prompt, message: body.message });
+  async sendEmail(@Body() reqBody: ReqPayloadDto) {
     try {
-      if (!body.prompt && !body.message) {
+      logger.info(`Received request body => ${JSON.stringify(reqBody)}`);
+
+      if (!reqBody.message) {
         throw new Error('Prompt is required');
       }
 
-      const webhookUrl = body.settings.find(
-        (s: any) => s.label === 'webhook_url',
-      ).default;
-
-      if (!body.settings || !webhookUrl) {
-        throw new Error('Webhook URL is required');
-      }
+      const channelId = reqBody.channel_id;
 
       const message = await this.emailMarketerService.generateEmailWithMastra(
-        body.message,
+        reqBody.message,
       );
 
       logger.info(
@@ -42,7 +36,7 @@ export class EmailMarketerController {
 
       await this.emailMarketerService.sendGeneratedEmailToTelex(
         message,
-        webhookUrl,
+        channelId,
       );
 
       return { message: 'Email successfully sent to Telex' };
@@ -54,6 +48,8 @@ export class EmailMarketerController {
 
   @Get('integration-config')
   async getIntegrationConfig() {
+    logger.info(`Integration Config`);
+
     return {
       data: {
         date: {
@@ -79,12 +75,6 @@ export class EmailMarketerController {
             type: 'number',
             required: true,
             default: '10',
-          },
-          {
-            label: 'webhook_url',
-            type: 'text',
-            required: true,
-            default: 'Write your webhook url here',
           },
         ],
         target_url: `https://mastraaiemailagent.onrender.com/email-marketer/generate`,
