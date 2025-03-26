@@ -43,8 +43,8 @@ export class EmailMarketerService {
     }
   }
 
-  async sendGeneratedEmailToTelex(email: string, webhook_url: string) {
-    const url = `https://ping.telex.im/v1/webhooks/${webhook_url}`;
+  async sendGeneratedEmailToTelex(email: string, channelId: string) {
+    const url = `https://ping.telex.im/v1/webhooks/${channelId}`;
     logger.info('Sending email to Telex:', { email });
 
     const data = {
