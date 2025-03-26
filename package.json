@@ -30,6 +30,7 @@
     "@nestjs/platform-express": "^10.0.0",
     "@types/winston": "^2.4.4",
     "agent": "@mastra/core/agent",
+    "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",

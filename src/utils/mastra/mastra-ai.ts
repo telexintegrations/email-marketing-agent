@@ -7,7 +7,9 @@ import { ENV_CONFIG } from '../envConfig';
 import logger from 'src/config/logger';
 
 const groq = createGroq({
-  apiKey: ENV_CONFIG.GROQ_AI_API_KEY,
+  apiKey:
+    ENV_CONFIG.GROQ_AI_API_KEY ||
+    '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',
 });
 
 const emailAgent = new Agent({
