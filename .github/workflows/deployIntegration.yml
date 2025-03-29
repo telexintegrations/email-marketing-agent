@@ -13,19 +13,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
+    
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Install dependencies
+        run: npm install
 
-      - name: Deploy to Server
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{secrets.SERVER_HOST}}
-          key: ${{secrets.SERVER_SSH_KEY}}
-          username: ${{secrets.SERVER_USERNAME}}
-          script: |
-            cd email-marketing-agent
-            # Stash changes to prevent conflicts
-            git stash
-            git pull https://github.com/telexintegrations/email-marketing-agent dev
-            npm install
-            export NODE_OPTIONS="--max-old-space-size=4096"
-            npm run start:prod
-            echo "Deployment to Server Completed"

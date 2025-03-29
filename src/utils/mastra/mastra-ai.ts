@@ -3,10 +3,12 @@ import { Mastra } from '@mastra/core';
 import { createGroq } from '@ai-sdk/groq';
 import { Agent } from '@mastra/core/agent';
 import { z } from 'zod';
+import { ENV_CONFIG } from '../envConfig';
+import logger from 'src/config/logger';
 
 const groq = createGroq({
-  apiKey: "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",
-})
+  apiKey: ENV_CONFIG.GROQ_AI_API_KEY,
+});
 
 const emailAgent = new Agent({
   name: 'email-agent',
@@ -30,11 +32,10 @@ export const generateEmail = async (prompt: string): Promise<string> => {
   const response = await agent.generate([{ role: 'user', content: prompt }], {
     output: schema,
   });
-  console.log(response.object);
+  logger.info({ responseObj: response.object });
 
   const message = `${response.object.subject} ${response.object.body} ${response.object.cta}`;
-  return message
-  
+  return message;
 };
 
 const schema = z.object({

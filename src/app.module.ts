@@ -11,5 +11,4 @@ import { ConfigModule } from '@nestjs/config';
   controllers: [AppController, EmailMarketerController],
   providers: [AppService],
 })
-
 export class AppModule {}
