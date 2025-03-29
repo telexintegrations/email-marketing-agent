@@ -6,8 +6,8 @@ export interface EmailGenerationResponse {
 }
 
 export type EmailGeneration = {
-  event_name: 'email_generated';
+  event_name: 'Email Suggestion';
   message: string;
   status: 'success';
-  username: 'mastraAiemailgen';
+  username: 'Email Marketing Agent';
 };

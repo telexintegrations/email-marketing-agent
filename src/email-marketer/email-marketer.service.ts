@@ -48,10 +48,10 @@ export class EmailMarketerService {
     logger.info('Sending email to Telex:', { email });
 
     const data = {
-      event_name: 'email_generated',
+      event_name: 'Email Suggestion',
       message: email,
       status: 'success',
-      username: 'mastraAiemailgen',
+      username: 'Email Marketing Agent',
     } as EmailGeneration;
 
     try {
