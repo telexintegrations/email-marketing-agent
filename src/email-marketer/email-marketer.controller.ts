@@ -61,7 +61,7 @@ export class EmailMarketerController {
           app_description:
             'An AI-powered email marketing agent designed to generate engaging and personalized marketing emails',
           app_logo: 'https://cdn-icons-png.flaticon.com/512/7286/7286142.png',
-          app_url: 'https://mastraaiemailagent.onrender.com',
+          app_url: ENV_CONFIG.SERVER_URL,
           background_color: '#fff',
         },
         is_active: true,
@@ -77,8 +77,8 @@ export class EmailMarketerController {
             default: '10',
           },
         ],
-        target_url: `https://mastraaiemailagent.onrender.com/email-marketer/generate`,
-        tick_url: `https://mastraaiemailagent.onrender.com/email-marketer/generate/integration-config`,
+        target_url: `${ENV_CONFIG.SERVER_URL}/email-marketer/generate`,
+        tick_url: `${ENV_CONFIG.SERVER_URL}/email-marketer/generate/integration-config`,
       },
     };
   }
