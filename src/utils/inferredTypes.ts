@@ -9,5 +9,5 @@ export type EmailGeneration = {
   event_name: 'Email Suggestion';
   message: string;
   status: 'success';
-  username: 'Email Marketinng Agent';
+  username: 'Email Marketing Agent';
 };

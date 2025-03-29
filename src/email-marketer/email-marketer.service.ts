@@ -51,7 +51,7 @@ export class EmailMarketerService {
       event_name: 'Email Suggestion',
       message: email,
       status: 'success',
-      username: 'Email Marketinng Agent',
+      username: 'Email Marketing Agent',
     } as EmailGeneration;
 
     try {
