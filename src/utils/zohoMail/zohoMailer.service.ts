@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
 import logger from 'src/config/logger';
+import { ENV_CONFIG } from '../envConfig';
 
 @Injectable()
 export class ZohoMailService {
@@ -10,15 +11,15 @@ export class ZohoMailService {
     this.transporter = nodemailer.createTransport({
       service: 'smtp.zoho.com',
       auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
+        user: `${ENV_CONFIG.EMAIL_USER}`,
+        pass: `${ENV_CONFIG.EMAIL_PASS}`,
       },
     });
   }
 
   async sendMail(to: string, subject: string, text: string) {
     const mailOptions = {
-      from: process.env.EMAIL_USER,
+      from: `${ENV_CONFIG.EMAIL_USER}`,
       to,
       subject,
       text,
