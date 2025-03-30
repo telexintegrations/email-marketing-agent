@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import logger from 'src/config/logger';
-// import logger from 'src/config/logger';
 import { EmailGeneration } from 'src/utils/inferredTypes';
 import { generateEmail } from 'src/utils/mastra/mastra-ai';
 
