@@ -7,6 +7,7 @@ import {
   Post,
 } from '@nestjs/common';
 import { EmailMarketerService } from './email-marketer.service';
+import { ENV_CONFIG } from '../utils/envConfig';
 import logger from 'src/config/logger';
 import { ReqPayloadDto } from './dto/req-payload.dto';
 
@@ -15,35 +16,24 @@ export class EmailMarketerController {
   constructor(private readonly emailMarketerService: EmailMarketerService) {}
 
   @Post('generate')
-  async sendEmail(@Body() body: any) {
-    // logger.info('Received request body:', { body });
-    console.log('Received request body:', JSON.stringify({ body }));
-
-console.log(JSON.stringify({prompt:body.prompt}), JSON.stringify({message:body.message}))
+  async sendEmail(@Body() reqBody: ReqPayloadDto) {
     try {
-      if (!body.prompt && !body.message) {
+      logger.info(`Received request body => ${JSON.stringify(reqBody)}`);
+
+      if (!reqBody.message) {
         throw new Error('Prompt is required');
       }
 
-      const webhookUrl = body.settings.find(
-        (s: any) => s.label === 'webhook_url',
-      ).default;
-
-      if (!body.settings || !webhookUrl) {
-        throw new Error('Webhook URL is required');
-      }
+      const channelId = reqBody.channel_id;
 
       const message = await this.emailMarketerService.generateEmailWithMastra(
-        body.message,
+        reqBody.message,
       );
 
-      // logger.info('Calling sendGeneratedEmailToTelex with message:', {
-      //   message,
-      // });
-      console.log(
-        'Calling sendGeneratedEmailToTelex with message:',
-        JSON.stringify({ message }),
+      logger.info(
+        `Calling sendGeneratedEmailToTelex with message => ${message}`,
       );
+
       await this.emailMarketerService.sendGeneratedEmailToTelex(
         message,
         channelId,
@@ -61,14 +51,15 @@ console.log(JSON.stringify({prompt:body.prompt}), JSON.stringify({message:body.m
 
       return { message: 'Email successfully sent to Telex' };
     } catch (error) {
-      // logger.error('Error in sendEmail controller:', { error });
-      console.log('Error in sendEmail controller:', JSON.stringify({ error }));
+      logger.error(`Error in sendEmail controller => ${error}`);
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
   @Get('integration-config')
   async getIntegrationConfig() {
+    logger.info(`Integration Config`);
+
     return {
       data: {
         date: {
@@ -80,7 +71,7 @@ console.log(JSON.stringify({prompt:body.prompt}), JSON.stringify({message:body.m
           app_description:
             'An AI-powered email marketing agent designed to generate engaging and personalized marketing emails',
           app_logo: 'https://cdn-icons-png.flaticon.com/512/7286/7286142.png',
-          app_url: ENV_CONFIG.SERVER_URL,
+          app_url: 'https://mastraaiemailagent.onrender.com',
           background_color: '#fff',
         },
         is_active: true,
