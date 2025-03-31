@@ -7,8 +7,8 @@ import {
   Post,
 } from '@nestjs/common';
 import { EmailMarketerService } from './email-marketer.service';
-import { ENV_CONFIG } from "../utils/envConfig";
-// import logger from 'src/config/logger';
+import logger from 'src/config/logger';
+import { ReqPayloadDto } from './dto/req-payload.dto';
 
 @Controller('email-marketer')
 export class EmailMarketerController {
@@ -43,7 +43,17 @@ console.log(JSON.stringify({prompt:body.prompt}), JSON.stringify({message:body.m
       console.log('Calling sendGeneratedEmailToTelex with message:', JSON.stringify({ message, }));
       await this.emailMarketerService.sendGeneratedEmailToTelex(
         message,
-        webhookUrl,
+        channelId,
+      );
+
+      const receiver_email = reqBody.settings.find(
+        (setting) => setting.label === 'receiver_email',
+      )?.default;
+
+      await this.emailMarketerService.sendMail(
+        receiver_email,
+        'Email Suggestion',
+        message,
       );
 
       return { message: 'Email successfully sent to Telex' };
@@ -83,16 +93,14 @@ console.log(JSON.stringify({prompt:body.prompt}), JSON.stringify({message:body.m
             default: '10',
           },
           {
-            label: 'webhook_url',
+            label: 'receiver_email',
             type: 'text',
             required: true,
-            default: 'Write your webhook url here',
+            default: '',
           },
         ],
-        target_url:
-          `${ENV_CONFIG.SERVER_URL}/email-marketer/generate`,
-        tick_url:
-          `${ENV_CONFIG.SERVER_URL}/email-marketer/generate/integration-config`,
+        target_url: `https://mastraaiemailagent.onrender.com/email-marketer/generate`,
+        tick_url: `https://mastraaiemailagent.onrender.com/email-marketer/integration-config`,
       },
     };
   }
