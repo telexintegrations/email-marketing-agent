@@ -7,7 +7,6 @@ import {
   Post,
 } from '@nestjs/common';
 import { EmailMarketerService } from './email-marketer.service';
-import { ENV_CONFIG } from '../utils/envConfig';
 import logger from 'src/config/logger';
 import { ReqPayloadDto } from './dto/req-payload.dto';
 
@@ -37,6 +36,16 @@ export class EmailMarketerController {
       await this.emailMarketerService.sendGeneratedEmailToTelex(
         message,
         channelId,
+      );
+
+      const receiver_email = reqBody.settings.find(
+        (setting) => setting.label === 'receiver_email',
+      )?.default;
+
+      await this.emailMarketerService.sendMail(
+        receiver_email,
+        'Email Suggestion',
+        message,
       );
 
       return { message: 'Email successfully sent to Telex' };
@@ -75,6 +84,12 @@ export class EmailMarketerController {
             type: 'number',
             required: true,
             default: '10',
+          },
+          {
+            label: 'receiver_email',
+            type: 'text',
+            required: true,
+            default: '',
           },
         ],
         target_url: `https://mastraaiemailagent.onrender.com/email-marketer/generate`,

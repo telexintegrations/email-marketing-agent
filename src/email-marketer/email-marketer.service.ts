@@ -1,10 +1,24 @@
 import { Injectable } from '@nestjs/common';
 import logger from 'src/config/logger';
+import * as nodemailer from 'nodemailer';
 import { EmailGeneration } from 'src/utils/inferredTypes';
 import { generateEmail } from 'src/utils/mastra/mastra-ai';
+import { ENV_CONFIG } from 'src/utils/envConfig';
 
 @Injectable()
 export class EmailMarketerService {
+  private transporter: nodemailer.Transporter;
+
+  constructor() {
+    this.transporter = nodemailer.createTransport({
+      service: 'smtp.zoho.com',
+      auth: {
+        user: `${ENV_CONFIG.EMAIL_USER}`,
+        pass: `${ENV_CONFIG.EMAIL_PASS}`,
+      },
+    });
+  }
+
   async generateEmailWithMastra(prompt: any): Promise<string> {
     const triggerWord = '@mailer ';
 
@@ -75,6 +89,24 @@ export class EmailMarketerService {
       return response;
     } catch (error) {
       logger.error('Error sending email to Telex:', error);
+    }
+  }
+
+  async sendMail(to: string, subject: string, text: string) {
+    const mailOptions = {
+      from: `${ENV_CONFIG.EMAIL_USER}`,
+      to,
+      subject,
+      text,
+    };
+
+    try {
+      const info = await this.transporter.sendMail(mailOptions);
+      logger.info('Email sent: ', info.messageId);
+      return info;
+    } catch (error) {
+      logger.error('Error sending email:', error);
+      throw error;
     }
   }
 }
