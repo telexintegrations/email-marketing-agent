@@ -40,7 +40,10 @@ console.log(JSON.stringify({prompt:body.prompt}), JSON.stringify({message:body.m
       // logger.info('Calling sendGeneratedEmailToTelex with message:', {
       //   message,
       // });
-      console.log('Calling sendGeneratedEmailToTelex with message:', JSON.stringify({ message, }));
+      console.log(
+        'Calling sendGeneratedEmailToTelex with message:',
+        JSON.stringify({ message }),
+      );
       await this.emailMarketerService.sendGeneratedEmailToTelex(
         message,
         channelId,

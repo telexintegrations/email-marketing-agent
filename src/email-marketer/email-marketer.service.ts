@@ -8,6 +8,17 @@ import { ENV_CONFIG } from 'src/utils/envConfig';
 @Injectable()
 export class EmailMarketerService {
   private transporter: nodemailer.Transporter;
+
+  constructor() {
+    this.transporter = nodemailer.createTransport({
+      service: 'smtp.zoho.com',
+      auth: {
+        user: `${ENV_CONFIG.EMAIL_USER}`,
+        pass: `${ENV_CONFIG.EMAIL_PASS}`,
+      },
+    });
+  }
+
   async generateEmailWithMastra(prompt: any): Promise<string> {
     const triggerWord = '@mailer ';
 
