@@ -7,7 +7,6 @@ import {
   Post,
 } from '@nestjs/common';
 import { EmailMarketerService } from './email-marketer.service';
-import { ENV_CONFIG } from '../utils/envConfig';
 import logger from 'src/config/logger';
 import { ReqPayloadDto } from './dto/req-payload.dto';
 
