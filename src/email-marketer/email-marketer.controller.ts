@@ -33,10 +33,11 @@ export class EmailMarketerController {
         `Calling sendGeneratedEmailToTelex with message => ${message}`,
       );
 
-      await this.emailMarketerService.sendGeneratedEmailToTelex(
-        message,
-        channelId,
-      );
+      const generatedEmail =
+        await this.emailMarketerService.sendGeneratedEmailToTelex(
+          message,
+          channelId,
+        );
 
       const receiver_email = reqBody.settings.find(
         (setting) => setting.label === 'receiver_email',
@@ -48,7 +49,7 @@ export class EmailMarketerController {
         message,
       );
 
-      return { message: 'Email successfully sent to Telex' };
+      return generatedEmail;
     } catch (error) {
       logger.error(`Error in sendEmail controller => ${error}`);
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
