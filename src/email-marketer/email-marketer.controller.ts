@@ -39,15 +39,15 @@ export class EmailMarketerController {
           channelId,
         );
 
-      const receiver_email = reqBody.settings.find(
-        (setting) => setting.label === 'receiver_email',
-      )?.default;
+      // const receiver_email = reqBody.settings.find(
+      //   (setting) => setting.label === 'receiver_email',
+      // )?.default;
 
-      await this.emailMarketerService.sendMail(
-        receiver_email,
-        'Email Suggestion',
-        message,
-      );
+      // await this.emailMarketerService.sendMail(
+      //   receiver_email,
+      //   'Email Suggestion',
+      //   message,
+      // );
 
       return generatedEmail;
     } catch (error) {
