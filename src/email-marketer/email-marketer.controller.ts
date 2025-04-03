@@ -93,8 +93,8 @@ export class EmailMarketerController {
             default: '',
           },
         ],
-        target_url: `https://mastraaiemailagent.onrender.com/email-marketer/generate`,
-        tick_url: `https://mastraaiemailagent.onrender.com/email-marketer/integration-config`,
+        target_url: `https://email-marketing-agent.onrender.com/email-marketer/generate`,
+        tick_url: `https://email-marketing-agent.onrender.com/email-marketer/integration-config`,
       },
     };
   }
