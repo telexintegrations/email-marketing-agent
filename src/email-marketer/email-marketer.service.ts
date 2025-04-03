@@ -86,7 +86,7 @@ export class EmailMarketerService {
       } else {
         logger.info('Email successfully sent to Telex.');
       }
-      return response;
+      return data;
     } catch (error) {
       logger.error('Error sending email to Telex:', error);
     }
