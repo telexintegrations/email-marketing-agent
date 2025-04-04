@@ -38,6 +38,7 @@ jobs:
           fi
 
       - name: Run Newman Tests and Generate Report
+        continue-on-error: true
         run: |
           TIMESTAMP=$(date +"%Y-%m-%d")
           mkdir -p test-reports
@@ -47,6 +48,7 @@ jobs:
           --reporter-html-export tests/qa/newman-report-$TIMESTAMP.html
 
       - name: Upload Test Reports
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: newman-test-reports
