@@ -1,0 +1,56 @@
+name: Newman Integration Tests
+
+on:
+  push:
+    branches: [main, 'dev']
+    paths:
+      - 'tests/**'
+  pull_request:
+    branches: [main, 'dev']
+    paths:
+      - 'tests/**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Dependencies
+        working-directory: ./src
+        run: npm install
+
+      - name: Install Newman and Reporters
+        run: npm install -g newman newman-reporter-html newman-reporter-json
+
+      - name: Ensure Postman Files Exist
+        run: |
+          if [ ! -f tests/qa/collection.json ]; then
+            echo "ERROR: Postman collection file not found!"
+            exit 1
+          fi
+
+      - name: Run Newman Tests and Generate Report
+        continue-on-error: true
+        run: |
+          TIMESTAMP=$(date +"%Y-%m-%d")
+          mkdir -p test-reports
+          newman run tests/qa/collection.json \
+          --reporters cli,json,html \
+          --reporter-json-export tests/qa/newman-report-$TIMESTAMP.json \
+          --reporter-html-export tests/qa/newman-report-$TIMESTAMP.html
+
+      - name: Upload Test Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: newman-test-reports
+          path: tests/qa/
+          retention-days: 7
