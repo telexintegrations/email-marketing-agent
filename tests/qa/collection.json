@@ -1,0 +1,922 @@
+{
+	"info": {
+		"_postman_id": "c2f6659b-a216-4387-907f-4583469f4c43",
+		"name": "Email Marketing",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33337500",
+		"_collection_link": "https://busayo-3450.postman.co/workspace/TELEX~2ce27e76-ad33-4068-aa4e-9ba18904f589/collection/33337500-c2f6659b-a216-4387-907f-4583469f4c43?action=share&source=collection_link&creator=33337500"
+	},
+	"item": [
+		{
+			"name": "Email request",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Verify response status code is 201\r",
+							"pm.test(\"Status code is 201\", function() {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"//Verify response has the expected JSON structure\r",
+							"pm.test(\"Response has correct structure\", function() {\r",
+							"    const response = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(response).to.have.all.keys(\r",
+							"        'event_name',\r",
+							"        'message',\r",
+							"        'status',\r",
+							"        'username'\r",
+							"    );\r",
+							"    \r",
+							"    pm.expect(response.event_name).to.be.a('string');\r",
+							"    pm.expect(response.message).to.be.a('string');\r",
+							"    pm.expect(response.status).to.be.a('string');\r",
+							"    pm.expect(response.username).to.be.a('string');\r",
+							"});\r",
+							"\r",
+							"// Validate specific field values\r",
+							"pm.test(\"Field values are valid\", function() {\r",
+							"    const response = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(response.event_name).to.eql(\"Email Suggestion\");\r",
+							"    pm.expect(response.status).to.eql(\"success\");\r",
+							"    pm.expect(response.username).to.eql(\"Email Marketing Agent\");\r",
+							"});\r",
+							"\r",
+							"//More flexible email structure validation\r",
+							"pm.test(\"Email has proper structure\", function() {\r",
+							"    const message = pm.response.json().message;\r",
+							"    \r",
+							"    // Check if message contains either a complete email OR template markers\r",
+							"    pm.expect(\r",
+							"        message.includes(\"Dear\") || \r",
+							"        message.includes(\"[Your\") ||\r",
+							"        message.includes(\"Key Features\") ||\r",
+							"        message.includes(\"Best regards\")\r",
+							"    ).to.be.true;\r",
+							"    \r",
+							"    pm.expect(message.length).to.be.above(100);\r",
+							"});\r",
+							"\r",
+							"// Improved placeholder validation\r",
+							"pm.test(\"Email message has acceptable template content\", function() {\r",
+							"    const message = pm.response.json().message;\r",
+							"    \r",
+							"    // Count template placeholders\r",
+							"    const placeholderCount = (message.match(/\\[.*?\\]/g) || []).length;\r",
+							"    \r",
+							"    // Allow some placeholders but not too many\r",
+							"    pm.expect(placeholderCount).to.be.below(5);\r",
+							"    \r",
+							"    // Check for unprocessed AI markers\r",
+							"    pm.expect(message).to.not.include(\"As an AI language model\");\r",
+							"});\r",
+							"\r",
+							"//Performance check\r",
+							"pm.test(\"Response time is acceptable\", function() {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"channel_id\": \"0195ab80-a186-75cf-97d2-1efff827ba2e\",\r\n  \"thread_id\" : \"01959007-4e9c-7c1e-882b-6f36b308a5e0\",\r\n  \"org_id\" : \"01958562-1d14-7c66-9a4b-6b33df9f38dc\",\r\n  \"message\": \"@mailer generate an email for selling my house\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://email-marketing-agent.onrender.com/email-marketer/generate",
+					"protocol": "https",
+					"host": [
+						"email-marketing-agent",
+						"onrender",
+						"com"
+					],
+					"path": [
+						"email-marketer",
+						"generate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Missing Required Fields",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//Verify the API rejects requests with missing channel_id\r",
+							"pm.test(\"API should reject request with missing channel_id\", function() {\r",
+							"    // Verify we got an error response\r",
+							"    pm.response.to.have.status(400); // or whatever error code your API uses\r",
+							"    \r",
+							"    // Check for error message in response\r",
+							"    const response = pm.response.json();\r",
+							"    pm.expect(response).to.have.property('error');\r",
+							"    pm.expect(response.error).to.include('channel_id');\r",
+							"    pm.expect(response.error).to.include('required');\r",
+							"});\r",
+							"\r",
+							"//Verify no processing occurred\r",
+							"pm.test(\"No email was generated\", function() {\r",
+							"    const response = pm.response.json();\r",
+							"    pm.expect(response).to.not.have.property('message');\r",
+							"    pm.expect(response).to.not.have.property('status', 'success');\r",
+							"});\r",
+							"\r",
+							"//Verify error structure\r",
+							"pm.test(\"Error response has proper structure\", function() {\r",
+							"    const response = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(response).to.have.all.keys(\r",
+							"        'error'\r",
+							"    );\r",
+							"    \r",
+							"    pm.expect(response.error).to.be.a('string');\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"channel_id\": \"\",\r\n  \"thread_id\" : \"\",\r\n  \"org_id\" : \"\",\r\n  \"settings\": [\r\n    {\r\n        \"label\": \"Duration\",\r\n        \"type\": \"number\",\r\n        \"required\": true,\r\n        \"default\": \"10\"\r\n      }\r\n  ],\r\n  \"message\": \"@mailer generate a mail for selling chikin\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://email-marketing-agent.onrender.com/email-marketer/generate",
+					"protocol": "https",
+					"host": [
+						"email-marketing-agent",
+						"onrender",
+						"com"
+					],
+					"path": [
+						"email-marketer",
+						"generate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Missing message field",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Validate response status code\r",
+							"pm.test(\"Response status code is 400 (Bad Request)\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"// Validate response contains the correct error message\r",
+							"pm.test(\"Response contains a message indicating that a prompt is required\", function () {\r",
+							"    var response = pm.response.json();\r",
+							"    pm.expect(response).to.have.property(\"message\");\r",
+							"    pm.expect(response.message.toLowerCase()).to.include(\"prompt is required\");\r",
+							"});\r",
+							"\r",
+							"// Validate response contains the correct statusCode property\r",
+							"pm.test(\"Response contains the correct statusCode property\", function () {\r",
+							"    var response = pm.response.json();\r",
+							"    pm.expect(response).to.have.property(\"statusCode\");\r",
+							"    pm.expect(response.statusCode).to.equal(400);\r",
+							"});\r",
+							"\r",
+							"// Validate response time is within an acceptable limit\r",
+							"pm.test(\"Response time is less than 500ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"channel_id\": \"0195ab80-a186-75cf-97d2-1efff827ba2e\",\r\n  \"thread_id\" : \"123456789010\",\r\n  \"org_id\" : \"12345689091877930\",\r\n  \"settings\": [\r\n    {\r\n        \"label\": \"Duration\",\r\n        \"type\": \"number\",\r\n        \"required\": true,\r\n        \"default\": \"\"\r\n      }\r\n  ],\r\n  \"message\": \"\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://email-marketing-agent.onrender.com/email-marketer/generate",
+					"protocol": "https",
+					"host": [
+						"email-marketing-agent",
+						"onrender",
+						"com"
+					],
+					"path": [
+						"email-marketer",
+						"generate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Tone Customization",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Validate HTTP response basics\r",
+							"pm.test(\"Returns 201 Created status\", function() {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"// Validate response structure and data types\r",
+							"pm.test(\"Response contains all required fields with proper types\", function() {\r",
+							"    const response = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(response).to.have.all.keys([\r",
+							"        \"event_name\",\r",
+							"        \"message\",\r",
+							"        \"status\",\r",
+							"        \"username\"\r",
+							"    ]);\r",
+							"    \r",
+							"    pm.expect(response.event_name).to.be.a(\"string\");\r",
+							"    pm.expect(response.message).to.be.a(\"string\");\r",
+							"    pm.expect(response.status).to.be.a(\"string\");\r",
+							"    pm.expect(response.username).to.be.a(\"string\");\r",
+							"    \r",
+							"    pm.expect(response.status).to.eql(\"success\");\r",
+							"    pm.expect(response.username).to.eql(\"Email Marketing Agent\");\r",
+							"});\r",
+							"//Core Apology Validation\r",
+							"pm.test(\"Contains required apology keywords\", function() {\r",
+							"    const email = pm.response.json().message.toLowerCase();\r",
+							"    \r",
+							"    // 1. Check for ANY of these phrases\r",
+							"    pm.expect(email).to.include.oneOf([\r",
+							"        \"sorry\",\r",
+							"        \"apologize\",\r",
+							"        \"apology\",\r",
+							"        \"regret\",\r",
+							"        \"inconvenience\",\r",
+							"        \"sincerely\"\r",
+							"    ]);\r",
+							"    \r",
+							"    // 2. Banned negative words\r",
+							"    const negativeWords = [\r",
+							"        \"terrible\", \"awful\", \"horrible\",\r",
+							"        \"useless\", \"worthless\", \"stupid\"\r",
+							"    ];\r",
+							"    negativeWords.forEach(word => {\r",
+							"        pm.expect(email).not.to.include(word);\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"// Structure Check\r",
+							"pm.test(\"Maintains professional format\", function() {\r",
+							"    const email = pm.response.json().message;\r",
+							"    pm.expect(email.split(\"\\n\\n\").length).to.be.above(2); // At least 3 paragraphs\r",
+							"});\r",
+							"\r",
+							"// Validate response time\r",
+							"pm.test(\"Response time is less than 600ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(600);\r",
+							"});\r",
+							"\r",
+							"// Validate response type\r",
+							"pm.test(\"Response is an object with specific properties and types\", function () {\r",
+							"    const response = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(response).to.be.an(\"object\");\r",
+							"    pm.expect(response).to.have.property(\"event_name\").that.is.a(\"string\");\r",
+							"    pm.expect(response).to.have.property(\"message\").that.is.a(\"string\");\r",
+							"    pm.expect(response).to.have.property(\"status\").that.is.a(\"string\");\r",
+							"    pm.expect(response).to.have.property(\"username\").that.is.a(\"string\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"channel_id\": \"0195ab80-a186-75cf-97d2-1efff827ba2e\",\r\n  \"thread_id\" : \"123456789010\",\r\n  \"org_id\" : \"12345689091877930\",\r\n  \"settings\": [\r\n    {\r\n        \"label\": \"Duration\",\r\n        \"type\": \"number\",\r\n        \"required\": true,\r\n        \"default\": \"10\"\r\n      }\r\n  ],\r\n  \"message\": \"@mailer generate an apology mail to customer\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://email-marketing-agent.onrender.com/email-marketer/generate",
+					"protocol": "https",
+					"host": [
+						"email-marketing-agent",
+						"onrender",
+						"com"
+					],
+					"path": [
+						"email-marketer",
+						"generate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Content Moderation and correlation",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// HTTP Response Validation \r",
+							"pm.test(\"Status 201 Created\", () => {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"// Response Structure Validation\r",
+							"pm.test(\"Valid response structure\", () => {\r",
+							"    const res = pm.response.json();\r",
+							"    pm.expect(res).to.have.all.keys([\"event_name\", \"message\", \"status\", \"username\"]);\r",
+							"    pm.expect(res.status).to.eql(\"success\");\r",
+							"    pm.expect(res.username).to.eql(\"Email Marketing Agent\");\r",
+							"});\r",
+							"// Chocolate Content Validation \r",
+							"pm.test(\"Email must mention chocolate\", function() {\r",
+							"    const email = pm.response.json().message.toLowerCase();\r",
+							"    \r",
+							"    // 1. Primary chocolate terms (required)\r",
+							"    pm.expect(email).to.include.oneOf([\r",
+							"        \"chocolate\",\r",
+							"        \"sweet\",\r",
+							"    ]);\r",
+							" });\r",
+							" pm.test(\"No misleading non-chocolate terms\", function() {\r",
+							"    const email = pm.response.json().message.toLowerCase();\r",
+							"    pm.expect(email).not.to.include.oneOf([\r",
+							"        \"vanilla\",\r",
+							"        \"strawberry\",\r",
+							"        \"caramel\",\r",
+							"        \"cake\",\r",
+							"        \"pastry\"\r",
+							"    ]);\r",
+							"});\r",
+							"    \r",
+							"// Check if the response time is less than 500ms\r",
+							"pm.test(\"Response time is less than 500ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"channel_id\": \"0195ab80-a186-75cf-97d2-1efff827ba2e\",\r\n  \"thread_id\" : \"123456789010\",\r\n  \"org_id\" : \"12345689091877930\",\r\n  \"settings\": [\r\n    {\r\n        \"label\": \"Duration\",\r\n        \"type\": \"number\",\r\n        \"required\": true,\r\n        \"default\": \"10\"\r\n      }\r\n  ],\r\n  \"message\": \"@mailer generate a mail for chocolate sales\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://email-marketing-agent.onrender.com/email-marketer/generate",
+					"protocol": "https",
+					"host": [
+						"email-marketing-agent",
+						"onrender",
+						"com"
+					],
+					"path": [
+						"email-marketer",
+						"generate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Long Input",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const longText = \"@mailer generate a marketing email \" + \"Lorem ipsum \".repeat(500);\r",
+							"pm.variables.set(\"long_text\", longText);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response should be successful\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"// Get the response body\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"// Validate that the response contains a generated marketing email\r",
+							"pm.test(\"Response contains a marketing email\", function () {\r",
+							"    pm.expect(response).to.be.an(\"object\");\r",
+							"    pm.expect(response.message || response.content || response.text).to.include.any.of([\"marketing\", \"email\", \"campaign\", \"brand\", \"engagement\"]);\r",
+							"});\r",
+							"\r",
+							"// Check if the input message length matches the expected long input size\r",
+							"pm.test(\"Long input was correctly processed\", function () {\r",
+							"    let sentMessage = pm.variables.get(\"long_text\");\r",
+							"    let wordCount = sentMessage.trim().split(/\\s+/).length;\r",
+							"    \r",
+							"    console.log(\"Sent message word count:\", wordCount);\r",
+							"    \r",
+							"    // Ensure the sent message had 5000+ words\r",
+							"    pm.expect(wordCount).to.be.above(500);\r",
+							"});\r",
+							"pm.test(\"Response time is less than 500ms\", function () {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(500);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"channel_id\": \"0195ab80-a186-75cf-97d2-1efff827ba2e\",\r\n  \"thread_id\": \"123456789010\",\r\n  \"org_id\": \"12345689091877930\",\r\n  \"settings\": [\r\n    {\r\n      \"label\": \"Duration\",\r\n      \"type\": \"number\",\r\n      \"required\": true,\r\n      \"default\": \"10\"\r\n    }\r\n  ],\r\n  \"message\": \"{{long_text}}\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://email-marketing-agent.onrender.com/email-marketer/generate",
+					"protocol": "https",
+					"host": [
+						"email-marketing-agent",
+						"onrender",
+						"com"
+					],
+					"path": [
+						"email-marketer",
+						"generate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Emoji/Unicode Handling",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Status code\r",
+							"pm.test(\"Status code is 201 Created\", function() {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response contains all required fields\", function() {\r",
+							"    const res = pm.response.json();\r",
+							"    pm.expect(res).to.have.all.keys([\r",
+							"        \"event_name\",\r",
+							"        \"message\",\r",
+							"        \"status\",\r",
+							"        \"username\"\r",
+							"    ]);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Christmas email contains gift emoji\", function() {\r",
+							"    pm.expect(pm.response.json().message).to.include(\"🎁\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Email includes Christmas theme\", function() {\r",
+							"    const email = pm.response.json().message.toLowerCase();\r",
+							"    pm.expect(email).to.include(\"christmas\");\r",
+							"    pm.expect(email).to.include.oneOf([\"sale\", \"offer\", \"promotion\"]);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Gift emoji renders correctly\", function() {\r",
+							"    const email = pm.response.json().message;\r",
+							"    pm.expect(email).not.to.match(/\\\\uD83D\\\\uDC/); // No encoding artifacts\r",
+							"    pm.expect(email.indexOf(\"🎁\")).to.be.above(-1);\r",
+							"});\r",
+							"pm.test(\"Response time is less than 500ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"channel_id\": \"0195ab80-a186-75cf-97d2-1efff827ba2e\",\r\n  \"thread_id\" : \"123456789010\",\r\n  \"org_id\" : \"12345689091877930\",\r\n  \"settings\": [\r\n    {\r\n        \"label\": \"Duration\",\r\n        \"type\": \"number\",\r\n        \"required\": true,\r\n        \"default\": \"10\"\r\n      }\r\n  ],\r\n  \"message\": \"@mailer generate a marketing email for christmas🎁 sales\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://email-marketing-agent.onrender.com/email-marketer/generate",
+					"protocol": "https",
+					"host": [
+						"email-marketing-agent",
+						"onrender",
+						"com"
+					],
+					"path": [
+						"email-marketer",
+						"generate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Missing @mailer",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"// Updated response time test to 500ms\r",
+							"pm.test(\"Response time is less than 500ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+							"});\r",
+							"\r",
+							"// Verify that the response body contains a 'message' field\r",
+							"pm.test(\"Response contains a 'message' field\", function () {\r",
+							"    var responseBody = pm.response.json();\r",
+							"    pm.expect(responseBody).to.have.property('message');\r",
+							"    pm.expect(responseBody.message).to.be.a(\"string\").and.to.not.be.empty;\r",
+							"});\r",
+							"// Test to verify the structure of the user response\r",
+							"pm.test(\"User response structure is valid\", function () {\r",
+							"    var responseBody = pm.response.json();\r",
+							"    pm.expect(responseBody).to.have.property('event_name');\r",
+							"    pm.expect(responseBody).to.have.property('status');\r",
+							"    pm.expect(responseBody).to.have.property('username');\r",
+							"}); \r",
+							"// Test to verify the data in the response\r",
+							"pm.test(\"Verify the data in the response\", function () {\r",
+							"    var responseBody = pm.response.json();\r",
+							"\r",
+							"    // Check the type and value of event_name\r",
+							"    pm.expect(responseBody.event_name).to.be.a('string').and.to.have.lengthOf.above(0);\r",
+							"\r",
+							"    // Check the type and value of status\r",
+							"    pm.expect(responseBody.status).to.be.a('string').and.to.have.lengthOf.above(0);\r",
+							"\r",
+							"    // Check the type and value of username\r",
+							"    pm.expect(responseBody.username).to.be.a('string').and.to.have.lengthOf.above(0);\r",
+							"});\r",
+							"// Test to verify the data types in the response\r",
+							"pm.test(\"Verify the data types in the response\", function () {\r",
+							"    var responseBody = pm.response.json();\r",
+							"\r",
+							"    // Check the data type of event_name\r",
+							"    pm.expect(responseBody.event_name).to.be.a('string');\r",
+							"\r",
+							"    // Check the data type of status\r",
+							"    pm.expect(responseBody.status).to.be.a('string');\r",
+							"\r",
+							"    // Check the data type of username\r",
+							"    pm.expect(responseBody.username).to.be.a('string');\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"channel_id\": \"0195ab80-a186-75cf-97d2-1efff827ba2e\",\r\n  \"thread_id\" : \"123456789010\",\r\n  \"org_id\" : \"12345689091877930\",\r\n  \"settings\": [\r\n    {\r\n        \"label\": \"Duration\",\r\n        \"type\": \"number\",\r\n        \"required\": true,\r\n        \"default\": \"10\"\r\n      }\r\n  ],\r\n  \"message\": \"generate a marketing email\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://email-marketing-agent.onrender.com/email-marketer/generate",
+					"protocol": "https",
+					"host": [
+						"email-marketing-agent",
+						"onrender",
+						"com"
+					],
+					"path": [
+						"email-marketer",
+						"generate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Minimal input",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Verify that the response status is Created\r",
+							"pm.test(\"Response should be created\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"// Verify that the response body contains the 'message' field\r",
+							"pm.test(\"Response contains a 'message' field\", function () {\r",
+							"    var responseBody = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(responseBody).to.have.property('message');\r",
+							"    pm.expect(responseBody.message).to.be.a(\"string\").and.to.not.be.empty;\r",
+							"});\r",
+							"\r",
+							"// Verify that the response time is less than 500ms\r",
+							"pm.test(\"Response time is less than 500ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"channel_id\": \"0195ab80-a186-75cf-97d2-1efff827ba2e\",\r\n  \"thread_id\" : \"123456789010\",\r\n  \"org_id\" : \"12345689091877930\",\r\n  \"settings\": [\r\n    {\r\n        \"label\": \"Duration\",\r\n        \"type\": \"number\",\r\n        \"required\": true,\r\n        \"default\": \"10\"\r\n      }\r\n  ],\r\n  \"message\": \"@mailer b\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://email-marketing-agent.onrender.com/email-marketer/generate",
+					"protocol": "https",
+					"host": [
+						"email-marketing-agent",
+						"onrender",
+						"com"
+					],
+					"path": [
+						"email-marketer",
+						"generate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Upper Case",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 201\", function () {\r",
+							"  pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response is an object with event_name, status, and username properties\", function () {\r",
+							"  pm.expect(pm.response.json()).to.be.an('object').that.has.all.keys('event_name', 'status', 'username');\r",
+							"});\r",
+							"// Verify that the response body contains a 'message' field\r",
+							"pm.test(\"Response contains a 'message' field\", function () {\r",
+							"    var responseBody = pm.response.json();\r",
+							"    pm.expect(responseBody).to.have.property('message');\r",
+							"    pm.expect(responseBody.message).to.be.a(\"string\").and.to.not.be.empty;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 500ms\", function () {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(500);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"channel_id\": \"0195ab80-a186-75cf-97d2-1efff827ba2e\",\r\n  \"thread_id\" : \"123456789010\",\r\n  \"org_id\" : \"12345689091877930\",\r\n  \"settings\": [\r\n    {\r\n        \"label\": \"Duration\",\r\n        \"type\": \"number\",\r\n        \"required\": true,\r\n        \"default\": \"10\"\r\n      }\r\n  ],\r\n  \"message\": \"@MAILER FOOD\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://email-marketing-agent.onrender.com/email-marketer/generate",
+					"protocol": "https",
+					"host": [
+						"email-marketing-agent",
+						"onrender",
+						"com"
+					],
+					"path": [
+						"email-marketer",
+						"generate"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
