@@ -15,7 +15,7 @@ jobs:
       - name: Install Newman
         run: npm install -g newman
       - name: Run API Tests with Newman
-        run: newman run test/qa/collection.json
+        run: newman run tests/qa/collection.json
       # - name: Upload Test Report
       #   uses: actions/upload-artifact@v3
       #   with:
