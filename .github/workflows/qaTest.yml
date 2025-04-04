@@ -1,0 +1,23 @@
+name: API Test Automation
+on:
+  push:
+  pull_request:
+jobs:
+  api-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Install Newman
+        run: npm install -g newman
+      - name: Run API Tests with Newman
+        run: newman run test/qa/collection.json
+      - name: Upload Test Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: API Test Report
+          path: test/qa/report.json
